@@ -31,6 +31,7 @@
         "doctrine/cache": "^1.7",
         "lefuturiste/slim-whoops": "^0.6.2",
         "lefuturiste/validator": "^1.0",
-        "lefuturiste/httper": "v0.4-alpha"
+        "lefuturiste/httper": "v0.4-alpha",
+        "nopjmp/discord-webhooks": "^0.3.1"
     }
 }

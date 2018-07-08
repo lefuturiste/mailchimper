@@ -30,7 +30,7 @@ You can set environments variables by using a `.env` file
 | APP_NAME | mailchimper | mailchimper |
 | APP_ENV_NAME | staging | prod
 | APP_DEBUG | 1 | 1
-| LOG_DISCORD | https://discordapp.com/api/webhooks/ID/TOKEN | https://discordapp.com/api/webhooks/ID/TOKEN
+| LOG_DISCORD | 1 | 0
 | LOG_PATH | ../log | ../log
 | LOG_LEVEL | INFO | INFO
 | LOG_DISCORD_WH | https://discordapp.com/api/webhooks/ID/TOKEN | Yes

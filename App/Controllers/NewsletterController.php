@@ -3,6 +3,9 @@
 namespace App\Controllers;
 
 use App\MailChimp;
+use DiscordWebhooks\Client;
+use DiscordWebhooks\Embed;
+use function DusanKasan\Knapsack\toArray;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,18 +40,39 @@ class NewsletterController extends Controller
             return $response->withJson([
                 'success' => false,
                 'errors' => $validator->getErrors()
-            ])->withStatus(400);
+            ]);
         }
     }
 
-    public function getEventSubscribe(ServerRequestInterface $request, ResponseInterface $response)
+    public function getEvent(ServerRequestInterface $request, ResponseInterface $response)
     {
         return $response->withJson(true)->withStatus(200);
     }
 
-    public function postEventSubscribe(ServerRequestInterface $request, ResponseInterface $response, Logger $logger)
+    public function postEvent(ServerRequestInterface $request, ResponseInterface $response, Logger $logger)
     {
-        $logger->info("new request body : " . json_encode($request->getParsedBody()));
+        $data = $request->getParsedBody();
+//        $data = json_decode("{\"type\":\"subscribe\",\"fired_at\":\"2018-07-08 21:43:17\",\"data\":{\"id\":\"653cba3ea2\",\"email\":\"helle@deleteme.com\",\"email_type\":\"html\",\"ip_opt\":\"163.172.159.182\",\"web_id\":\"42193373\",\"merges\":{\"EMAIL\":\"helle@deleteme.com\",\"FNAME\":\"\",\"LNAME\":\"\",\"ADDRESS\":\"\",\"PHONE\":\"\"},\"list_id\":\"d9a684ec79\"}}");
+        $data = json_decode(json_encode($data), true);
+        $webhook = new Client($this->container->get('mailchimp')['discord_wh']);
+        $embed = new Embed();
+        switch ($data['type']) {
+            case "subscribe":
+                $embed->color("27ae60");
+                $embed->title("New subscriber!");
+                $embed->field("Email", $data['data']['email']);
+                $embed->field("Ip", $data['data']['ip_opt']);
+                $embed->field("At", $data['fired_at']);
+                $embed->field("Id", $data['data']['id']);
+                try {
+                    $webhook->embed($embed)->send();
+                } catch (\Exception $e) {
+                    return $response->withJson([
+                        'success' => false
+                    ]);
+                }
+                break;
+        }
         return $response->withJson([
             'success' => true
         ]);
