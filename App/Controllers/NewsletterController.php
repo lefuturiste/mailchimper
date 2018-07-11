@@ -40,7 +40,7 @@ class NewsletterController extends Controller
             return $response->withJson([
                 'success' => false,
                 'errors' => $validator->getErrors()
-            ]);
+            ])->withStatus(400);
         }
     }
 
